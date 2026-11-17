@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo sitemap template. Not for production indexing as-is.
+     When moving to production, replace https://example.com with your site URL and update robots.txt to allow crawling. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://example.com/</loc></url>
+  <url><loc>https://example.com/high-school</loc></url>
+  <url><loc>https://example.com/middle-school</loc></url>
+  <url><loc>https://example.com/booster-club</loc></url>
+  <url><loc>https://example.com/calendar</loc></url>
+  <url><loc>https://example.com/registration</loc></url>
+  <url><loc>https://example.com/interest-form</loc></url>
+  <url><loc>https://example.com/families</loc></url>
+  <url><loc>https://example.com/sportsyou</loc></url>
+  <url><loc>https://example.com/usa-ultimate</loc></url>
+  <url><loc>https://example.com/play-opportunities</loc></url>
+  <url><loc>https://example.com/media</loc></url>
+  <url><loc>https://example.com/power-lunch</loc></url>
+  <url><loc>https://example.com/coaching-apprenticeship</loc></url>
+  <url><loc>https://example.com/fundraiser</loc></url>
+  <url><loc>https://example.com/sitemap</loc></url>
+  <url><loc>https://example.com/terms</loc></url>
+  <url><loc>https://example.com/privacy</loc></url>
+</urlset>
