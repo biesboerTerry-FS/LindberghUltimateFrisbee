@@ -209,6 +209,13 @@ export default function AdminLayout() {
 					</button>
 				</header>
 
+				{user?.isDemo && (
+					<div className="border-b border-lu-yellow bg-lu-yellow/20 px-4 py-2 text-center text-sm font-semibold text-lu-dark">
+						🎮 Demo mode — changes you make are saved to the database. Use the demo account to
+						explore freely.
+					</div>
+				)}
+
 				<main className="flex-1 p-4 sm:p-6">
 					<Outlet />
 				</main>

@@ -5,13 +5,14 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../../assets/ultimateLogoTransparent.png";
 import OAuthButtons from "../../components/OAuthButtons";
 import { usePublicAuth } from "../../auth/PublicAuthContext";
-import { ApiError } from "../../lib/api";
+import { ApiError, loginPublicDemo } from "../../lib/api";
 
 export default function Login() {
-	const { user, checking, refreshUser } = usePublicAuth();
+	const { user, checking, refreshUser, signInWithToken } = usePublicAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [errorMessage, setErrorMessage] = useState("");
+	const [status, setStatus] = useState("idle");
 
 	const returnTo = location.state?.from || "/account";
 
@@ -20,6 +21,22 @@ export default function Login() {
 			navigate(returnTo, { replace: true });
 		}
 	}, [checking, user, navigate, returnTo]);
+
+	const handleDemoLogin = async () => {
+		setStatus("submitting");
+		setErrorMessage("");
+		try {
+			const data = await loginPublicDemo();
+			signInWithToken(data.token, data.user);
+		} catch (error) {
+			setErrorMessage(
+				error instanceof ApiError
+					? error.message
+					: "Unable to start demo. Please try again."
+			);
+			setStatus("error");
+		}
+	};
 
 	const queryError = useMemo(
 		() => new URLSearchParams(location.search).get("error"),
@@ -69,6 +86,15 @@ export default function Login() {
 						<span>or</span>
 						<span className="h-px flex-1 bg-lu-cream/20" aria-hidden="true" />
 					</div>
+
+					<button
+						type="button"
+						onClick={handleDemoLogin}
+						disabled={status === "submitting"}
+						className="rounded-full border border-lu-yellow px-6 py-3 font-bold text-lu-yellow transition-all hover:bg-lu-yellow hover:text-lu-green disabled:cursor-not-allowed disabled:opacity-60"
+					>
+						{status === "submitting" ? "Starting demo…" : "Try demo account"}
+					</button>
 
 					<p className="text-center text-sm text-lu-cream/70">
 						Prefer email?{" "}

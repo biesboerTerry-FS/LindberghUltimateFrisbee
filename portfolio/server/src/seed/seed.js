@@ -23,6 +23,7 @@ import {
 } from "../models/index.js";
 import { slugify } from "../utils/slugify.js";
 import { seedAdminUser } from "./adminUser.js";
+import { seedDemoUsers } from "./demoUsers.js";
 import {
 	boosterMembers,
 	coaches,
@@ -457,6 +458,9 @@ async function seed() {
 	// The site has a single Admin Panel login. No coach account is seeded.
 	await seedAdminUser();
 	console.log(`[seed] admin user: ${config.SEED_ADMIN_EMAIL}`);
+
+	// Demo users for the "Try demo" buttons ---------------------------------
+	await seedDemoUsers();
 
 	// Disable the legacy demo coach account if it was created by an earlier seed.
 	const legacyCoach = await User.updateOne(

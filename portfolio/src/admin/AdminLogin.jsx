@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../assets/ultimateLogoTransparent.png";
-import { ApiError } from "../lib/api";
+import { ApiError, loginAdminDemo } from "../lib/api";
 import { useAdminAuth } from "./AdminAuthContext";
 import OAuthButtons from "../components/OAuthButtons";
 
@@ -12,7 +12,7 @@ import OAuthButtons from "../components/OAuthButtons";
  * Supports email/password login and OAuth, then redirects to the requested admin route.
  */
 export default function AdminLogin() {
-	const { signIn, user, checking } = useAdminAuth();
+	const { signIn, signInWithToken, user, checking } = useAdminAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [email, setEmail] = useState("");
@@ -43,6 +43,23 @@ export default function AdminLogin() {
 		} catch (error) {
 			setErrorMessage(
 				error instanceof ApiError ? error.message : "Unable to sign in. Please try again."
+			);
+			setStatus("error");
+		}
+	};
+
+	/** One-click demo login for visitors who want to try the admin panel. */
+	const handleDemoLogin = async () => {
+		setStatus("submitting");
+		setErrorMessage("");
+		try {
+			const data = await loginAdminDemo();
+			signInWithToken(data.token, data.user);
+		} catch (error) {
+			setErrorMessage(
+				error instanceof ApiError
+					? error.message
+					: "Unable to start demo. Please try again."
 			);
 			setStatus("error");
 		}
@@ -139,6 +156,21 @@ export default function AdminLogin() {
 							className="rounded-full bg-lu-yellow px-6 py-3 font-bold text-lu-green transition-all hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
 						>
 							{status === "submitting" ? "Signing in…" : "Sign in"}
+						</button>
+
+						<div className="flex items-center gap-3 text-xs uppercase tracking-widest text-lu-cream/60">
+							<span className="h-px flex-1 bg-lu-cream/20" aria-hidden="true" />
+							<span>or</span>
+							<span className="h-px flex-1 bg-lu-cream/20" aria-hidden="true" />
+						</div>
+
+						<button
+							type="button"
+							onClick={handleDemoLogin}
+							disabled={status === "submitting"}
+							className="rounded-full border border-lu-yellow px-6 py-3 font-bold text-lu-yellow transition-all hover:bg-lu-yellow hover:text-lu-green disabled:cursor-not-allowed disabled:opacity-60"
+						>
+							{status === "submitting" ? "Starting demo…" : "Try demo admin"}
 						</button>
 					</form>
 				</div>

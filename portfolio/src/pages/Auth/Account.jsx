@@ -28,6 +28,12 @@ export default function Account() {
 
 	return (
 		<div className="mx-auto w-full max-w-3xl px-4 py-10 font-body text-lu-ink sm:px-6">
+			{user?.isDemo && (
+				<div className="mb-4 rounded-xl border border-lu-yellow bg-lu-yellow/20 px-4 py-3 text-center text-sm font-semibold text-lu-dark">
+					🎮 Demo mode — this is a shared sample account. Sign out and use Google/Apple to
+					claim your own account.
+				</div>
+			)}
 			<div className="rounded-2xl border border-lu-yellow/50 bg-white p-6 shadow-sm sm:p-8 dark:bg-white">
 				<div className="flex items-start gap-4">
 					<span className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-lu-cream">

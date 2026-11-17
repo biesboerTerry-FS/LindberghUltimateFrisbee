@@ -30,6 +30,7 @@ const publicUserSchema = new mongoose.Schema(
 		providers: { type: [publicOAuthProviderSchema], default: [] },
 		isActive: { type: Boolean, default: true, index: true },
 		lastLoginAt: { type: Date },
+		isDemo: { type: Boolean, default: false, index: true },
 	},
 	baseSchemaOptions,
 );

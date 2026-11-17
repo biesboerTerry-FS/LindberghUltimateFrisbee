@@ -51,6 +51,14 @@ export default function AdminAuthProvider({ children }) {
 		return data.user;
 	}, []);
 
+	/** Accept a pre-fetched token/user pair (used by demo login). */
+	const signInWithToken = useCallback((nextToken, nextUser = null) => {
+		storeToken(nextToken);
+		setToken(nextToken);
+		if (nextUser) setUser(nextUser);
+		setChecking(false);
+	}, []);
+
 	/** Clear local session state and remove the stored auth token. */
 	const signOut = useCallback(() => {
 		clearStoredToken();
@@ -60,8 +68,8 @@ export default function AdminAuthProvider({ children }) {
 	}, []);
 
 	const value = useMemo(
-		() => ({ token, user, checking, signIn, signOut }),
-		[token, user, checking, signIn, signOut]
+		() => ({ token, user, checking, signIn, signInWithToken, signOut }),
+		[token, user, checking, signIn, signInWithToken, signOut]
 	);
 
 	return <AdminAuthContext.Provider value={value}>{children}</AdminAuthContext.Provider>;

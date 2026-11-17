@@ -162,6 +162,16 @@ export async function login(email, password) {
 	return payload.data;
 }
 
+export async function loginAdminDemo() {
+	const payload = await postJson("/auth/demo/admin");
+	return payload.data;
+}
+
+export async function loginPublicDemo() {
+	const payload = await postJson("/auth/demo/public");
+	return payload.data;
+}
+
 export function fetchMe(token = getStoredToken()) {
 	return getJson("/auth/me", { token });
 }

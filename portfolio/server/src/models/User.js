@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema(
 		isActive: { type: Boolean, default: true, index: true },
 		lastLoginAt: { type: Date },
 		passwordChangedAt: { type: Date },
+		isDemo: { type: Boolean, default: false, index: true },
 	},
 	baseSchemaOptions,
 );
