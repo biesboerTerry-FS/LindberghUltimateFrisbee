@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../assets/ultimateLogoTransparent.png";
 import { usePublicAuth } from "../auth/PublicAuthContext";
+import ThemeToggle from "../theme/ThemeToggle";
 
 const navLinkClass = ({ isActive }) =>
 	isActive
@@ -233,6 +234,8 @@ const Navbar = () => {
 				</Link>
 
 				{desktopNav}
+
+				<ThemeToggle />
 
 				<button
 					type="button"

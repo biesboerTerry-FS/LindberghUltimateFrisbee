@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../../assets/ultimateLogoTransparent.png";
@@ -11,7 +12,6 @@ export default function Login() {
 	const { user, checking, refreshUser, signInWithToken } = usePublicAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [errorMessage, setErrorMessage] = useState("");
 	const [status, setStatus] = useState("idle");
 
 	const returnTo = location.state?.from || "/account";
@@ -24,12 +24,12 @@ export default function Login() {
 
 	const handleDemoLogin = async () => {
 		setStatus("submitting");
-		setErrorMessage("");
 		try {
 			const data = await loginPublicDemo();
 			signInWithToken(data.token, data.user);
+			toast.success("Demo mode enabled — welcome to your sample account.");
 		} catch (error) {
-			setErrorMessage(
+			toast.error(
 				error instanceof ApiError
 					? error.message
 					: "Unable to start demo. Please try again."
@@ -42,13 +42,16 @@ export default function Login() {
 		() => new URLSearchParams(location.search).get("error"),
 		[location.search],
 	);
-	const displayError = errorMessage || queryError || "";
+
+	useEffect(() => {
+		if (queryError) toast.error(queryError);
+	}, [queryError]);
 
 	useEffect(() => {
 		if (user) return;
 		refreshUser().catch((error) => {
 			if (error && error.status !== 401) {
-				setErrorMessage(error instanceof ApiError ? error.message : "Unable to load your session.");
+				toast.error(error instanceof ApiError ? error.message : "Unable to load your session.");
 			}
 		});
 	}, [user, refreshUser]);
@@ -71,14 +74,6 @@ export default function Login() {
 				</div>
 
 				<div className="flex flex-col gap-5 rounded-2xl border border-lu-yellow/50 bg-white/10 p-6">
-					{displayError && (
-						<div
-							role="alert"
-							className="rounded-lg border border-lu-yellow bg-lu-yellow/10 px-4 py-3 text-sm"
-						>
-							{displayError}
-						</div>
-					)}
 					<OAuthButtons audience="public" returnTo={returnTo} variant="light" />
 
 					<div className="flex items-center gap-3 text-xs uppercase tracking-widest text-lu-cream/60">

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
 	ApiError,
 	createResource,
@@ -342,7 +343,6 @@ export default function RecordForm({ slug, record, fields, singular, onClose, on
 	const [refOptions, setRefOptions] = useState({});
 	const [refLoading, setRefLoading] = useState(refSlugs.length > 0);
 	const [saving, setSaving] = useState(false);
-	const [error, setError] = useState("");
 	const [fieldErrors, setFieldErrors] = useState({});
 
 	useEffect(() => {
@@ -487,12 +487,11 @@ export default function RecordForm({ slug, record, fields, singular, onClose, on
 
 		if (Object.keys(errors).length) {
 			setFieldErrors(errors);
-			setError("Please fix the highlighted fields before saving.");
+			toast.error("Please fix the highlighted fields before saving.");
 			return;
 		}
 
 		setSaving(true);
-		setError("");
 		setFieldErrors({});
 
 		try {
@@ -511,9 +510,9 @@ export default function RecordForm({ slug, record, fields, singular, onClose, on
 					if (field && !mapped[field.name]) mapped[field.name] = message;
 				}
 				setFieldErrors(mapped);
-				setError(err.message);
+				toast.error(err.message);
 			} else {
-				setError("Could not save this record. Please try again.");
+				toast.error("Could not save this record. Please try again.");
 			}
 			setSaving(false);
 		}
@@ -553,12 +552,6 @@ export default function RecordForm({ slug, record, fields, singular, onClose, on
 				</header>
 
 				<div className="flex-1 overflow-y-auto px-5 py-5">
-					{error && (
-						<div className="mb-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
-							{error}
-						</div>
-					)}
-
 					{refLoading && (
 						<p className="mb-4 text-xs text-lu-ink/45">Loading linked records for the pickers…</p>
 					)}

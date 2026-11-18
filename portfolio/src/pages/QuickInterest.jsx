@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { ApiError, submitInterestForm } from "../lib/api";
 import FieldError from "../components/FieldError";
 
@@ -33,7 +34,6 @@ const QuickInterest = () => {
 	});
 
 	const [status, setStatus] = useState("idle");
-	const [errorMessage, setErrorMessage] = useState("");
 	const [fieldErrors, setFieldErrors] = useState({});
 
 	const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
@@ -54,14 +54,12 @@ const QuickInterest = () => {
 			interestLevel: "",
 		});
 		setStatus("idle");
-		setErrorMessage("");
 		setFieldErrors({});
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setStatus("submitting");
-		setErrorMessage("");
 		setFieldErrors({});
 
 		try {
@@ -80,8 +78,9 @@ const QuickInterest = () => {
 				interestLevel: form.interestLevel,
 			});
 			setStatus("success");
+			toast.success("Interest form submitted. Thank you!");
 		} catch (error) {
-			setErrorMessage(
+			toast.error(
 				error instanceof ApiError
 					? error.message
 					: "Something went wrong. Please try again."
@@ -341,15 +340,6 @@ const QuickInterest = () => {
 
 						</div>
 					</div>
-
-					{status === "error" && errorMessage && (
-						<div
-							role="alert"
-							className="px-4 py-3 border-2 rounded-lg border-lu-yellow bg-lu-yellow/10 text-lu-cream"
-						>
-							{errorMessage}
-						</div>
-					)}
 
 					<button
 						type="submit"

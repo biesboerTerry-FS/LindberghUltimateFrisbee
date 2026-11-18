@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { ApiError, fetchDashboard } from "../lib/api";
 import { useAdminAuth } from "./AdminAuthContext";
 import { displayName, formatCurrency, formatDate } from "./format";
@@ -85,7 +86,9 @@ export default function AdminDashboard() {
 			})
 			.catch((err) => {
 				if (!cancelled) {
-					setError(err instanceof ApiError ? err.message : "Could not load the dashboard.");
+					const message = err instanceof ApiError ? err.message : "Could not load the dashboard.";
+					setError(message);
+					toast.error(message);
 				}
 			})
 			.finally(() => {
@@ -101,8 +104,15 @@ export default function AdminDashboard() {
 
 	if (error) {
 		return (
-			<div className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
-				{error}
+			<div className="rounded-xl border border-lu-green/15 bg-white p-6 text-lu-ink">
+				<p className="font-semibold">Could not load the dashboard.</p>
+				<button
+					type="button"
+					onClick={() => window.location.reload()}
+					className="mt-3 rounded-full bg-lu-green px-4 py-2 text-sm font-bold text-lu-cream hover:bg-lu-dark"
+				>
+					Retry
+				</button>
 			</div>
 		);
 	}

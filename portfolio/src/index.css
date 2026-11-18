@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: the .dark class is applied to <html> by ThemeProvider. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
 	--color-lu-green: #1c6a37;
 	--color-lu-dark: #123d24;
@@ -7,6 +10,11 @@
 	--color-lu-yellow: #fbcc00;
 	--color-lu-cream: #f9f9f9;
 	--color-lu-ink: #1a1a1a;
+	--color-lu-error: #b3261e;
+	--color-lu-error-soft: #fdecec;
+	--color-lu-error-ink: #7a1712;
+	--color-lu-error-dark-bg: #3b1616;
+	--color-lu-error-dark-ink: #ffc9c4;
 	--font-display: "Graduate", serif;
 	--font-roboto: "Roboto", "Helvetica Neue", Arial, sans-serif;
 	--font-body: Arial, Helvetica, sans-serif;
@@ -179,6 +187,53 @@ body {
 	100% {
 		transform: translate3d(-3%, 12%, 0) rotate(16deg) scale(1.08);
 	}
+}
+
+/* Toast notifications — lu-* palette, themed for light and dark.
+   These live outside @layer so they outrank sonner's injected unlayered CSS. */
+html [data-sonner-toaster][data-sonner-theme] {
+	--normal-bg: var(--color-lu-cream);
+	--normal-text: var(--color-lu-ink);
+	--normal-border: color-mix(in oklab, var(--color-lu-yellow) 55%, transparent);
+	--success-bg: var(--color-lu-green);
+	--success-text: var(--color-lu-cream);
+	--success-border: var(--color-lu-yellow);
+	--error-bg: var(--color-lu-error-soft);
+	--error-text: var(--color-lu-error-ink);
+	--error-border: var(--color-lu-error);
+}
+
+html.dark [data-sonner-toaster][data-sonner-theme] {
+	--normal-bg: var(--color-lu-dark);
+	--normal-text: var(--color-lu-cream);
+	--normal-border: color-mix(in oklab, var(--color-lu-yellow) 45%, transparent);
+	--success-bg: var(--color-lu-deep);
+	--success-text: var(--color-lu-yellow);
+	--success-border: var(--color-lu-yellow);
+	--error-bg: var(--color-lu-error-dark-bg);
+	--error-text: var(--color-lu-error-dark-ink);
+	--error-border: var(--color-lu-error);
+}
+
+[data-sonner-toast] {
+	font-family: var(--font-body);
+	border-width: 2px;
+	border-radius: 0.75rem;
+	box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.25);
+}
+
+[data-sonner-toast] [data-title] {
+	font-family: var(--font-roboto);
+	font-weight: 700;
+}
+
+[data-sonner-toast] [data-description] {
+	font-family: var(--font-body);
+}
+
+[data-sonner-toast] [data-button] {
+	font-family: var(--font-roboto);
+	font-weight: 700;
 }
 
 @media (prefers-reduced-motion: reduce) {

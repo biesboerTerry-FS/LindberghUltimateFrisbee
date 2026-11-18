@@ -7,6 +7,7 @@ import {
 	faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../assets/ultimateLogoTransparent.png";
+import ThemeToggle from "../theme/ThemeToggle";
 import { useAdminAuth } from "./AdminAuthContext";
 import { NAV_GROUPS, RESOURCES } from "./resources";
 
@@ -199,6 +200,8 @@ export default function AdminLayout() {
 							{user?.role === "admin" ? "Administrator" : "Admin panel"}
 						</p>
 					</div>
+
+					<ThemeToggle variant="admin" />
 
 					<button
 						type="button"

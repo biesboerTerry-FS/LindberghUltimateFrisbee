@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../assets/ultimateLogoTransparent.png";
@@ -18,7 +19,6 @@ export default function AdminLogin() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [status, setStatus] = useState("idle");
-	const [errorMessage, setErrorMessage] = useState("");
 
 	const redirectTo = location.state?.from || "/admin";
 
@@ -30,18 +30,21 @@ export default function AdminLogin() {
 		() => new URLSearchParams(location.search).get("error"),
 		[location.search],
 	);
-	const displayError = errorMessage || queryError || "";
+
+	useEffect(() => {
+		if (queryError) toast.error(queryError);
+	}, [queryError]);
 
 	/** Submit email/password credentials and surface API validation errors. */
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setStatus("submitting");
-		setErrorMessage("");
 
 		try {
 			await signIn(email.trim(), password);
+			toast.success("Signed in to the Admin Panel.");
 		} catch (error) {
-			setErrorMessage(
+			toast.error(
 				error instanceof ApiError ? error.message : "Unable to sign in. Please try again."
 			);
 			setStatus("error");
@@ -51,12 +54,12 @@ export default function AdminLogin() {
 	/** One-click demo login for visitors who want to try the admin panel. */
 	const handleDemoLogin = async () => {
 		setStatus("submitting");
-		setErrorMessage("");
 		try {
 			const data = await loginAdminDemo();
 			signInWithToken(data.token, data.user);
+			toast.success("Demo mode enabled — explore the Admin Panel.");
 		} catch (error) {
-			setErrorMessage(
+			toast.error(
 				error instanceof ApiError
 					? error.message
 					: "Unable to start demo. Please try again."
@@ -140,15 +143,6 @@ export default function AdminLogin() {
 								placeholder="••••••••"
 							/>
 						</div>
-
-						{(status === "error" || displayError) && displayError && (
-							<div
-								role="alert"
-								className="rounded-lg border border-lu-yellow bg-lu-yellow/10 px-4 py-3 text-sm"
-							>
-								{displayError}
-							</div>
-						)}
 
 						<button
 							type="submit"

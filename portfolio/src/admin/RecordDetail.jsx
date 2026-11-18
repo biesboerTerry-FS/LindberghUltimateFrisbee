@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { ApiError, fetchResource } from "../lib/api";
 import { displayName, formatDate } from "./format";
 import { RESOURCES } from "./resources";
@@ -141,7 +142,9 @@ export default function RecordDetail({
 			})
 			.catch((err) => {
 				if (!cancelled) {
-					setError(err instanceof ApiError ? err.message : "Could not load this record.");
+					const message = err instanceof ApiError ? err.message : "Could not load this record.";
+					setError(message);
+					toast.error(message);
 				}
 			})
 			.finally(() => {
@@ -213,10 +216,10 @@ export default function RecordDetail({
 
 				<div className="flex-1 overflow-y-auto px-5 py-5">
 					{loading && <p className="text-lu-ink/60">Loading record…</p>}
-					{error && (
-						<div className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-red-800">
-							{error}
-						</div>
+					{error && !loading && (
+						<p className="rounded-xl border border-lu-green/15 bg-white p-4 text-sm text-lu-ink/70">
+							This record could not be loaded. Close the panel and try again.
+						</p>
 					)}
 					{record && (
 						<div className="flex flex-col gap-6">

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import {
 	ApiError,
 	deleteResource,
@@ -77,8 +78,6 @@ function ResourceView({ slug }) {
 	const [rows, setRows] = useState([]);
 	const [pagination, setPagination] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState("");
-	const [notice, setNotice] = useState("");
 	const [selectedId, setSelectedId] = useState(null);
 	const [formState, setFormState] = useState(null);
 	const [fields, setFields] = useState(null);
@@ -89,14 +88,7 @@ function ResourceView({ slug }) {
 	/** Mark the list as loading before a refresh or page change. */
 	const startRequest = () => {
 		setLoading(true);
-		setError("");
 	};
-
-	useEffect(() => {
-		if (!notice) return undefined;
-		const timer = setTimeout(() => setNotice(""), 4000);
-		return () => clearTimeout(timer);
-	}, [notice]);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -111,7 +103,7 @@ function ResourceView({ slug }) {
 					signOut();
 					return;
 				}
-				setError("Could not load the form fields for this section. Refresh to try again.");
+				toast.error("Could not load the form fields for this section. Refresh to try again.");
 			});
 
 		return () => {
@@ -127,7 +119,6 @@ function ResourceView({ slug }) {
 			setSearch(next);
 			setPage(1);
 			setLoading(true);
-			setError("");
 		}, 300);
 		return () => clearTimeout(timer);
 	}, [q]);
@@ -141,7 +132,6 @@ function ResourceView({ slug }) {
 				if (cancelled) return;
 				setRows(payload.data || []);
 				setPagination(payload.pagination || null);
-				setError("");
 				setLoading(false);
 			})
 			.catch((err) => {
@@ -150,7 +140,7 @@ function ResourceView({ slug }) {
 					signOut();
 					return;
 				}
-				setError(err instanceof ApiError ? err.message : "Could not load records.");
+				toast.error(err instanceof ApiError ? err.message : "Could not load records.");
 				setLoading(false);
 			});
 
@@ -172,7 +162,7 @@ function ResourceView({ slug }) {
 
 	/** Refresh the list after a successful create/update. */
 	const handleSaved = () => {
-		setNotice(`${resource.singular} saved.`);
+		toast.success(`${resource.singular} saved.`);
 		setFormState(null);
 		setSelectedId(null);
 		startRequest();
@@ -187,12 +177,11 @@ function ResourceView({ slug }) {
 		if (!window.confirm(`Delete ${label}? This cannot be undone.`)) return;
 
 		setDeleting(true);
-		setError("");
 
 		deleteResource(slug, id)
 			.then(() => {
 				setSelectedId(null);
-				setNotice(`${resource.singular} deleted.`);
+				toast.success(`${resource.singular} deleted.`);
 				startRequest();
 				setReloadKey((key) => key + 1);
 			})
@@ -202,7 +191,7 @@ function ResourceView({ slug }) {
 					return;
 				}
 				setSelectedId(null);
-				setError(err instanceof ApiError ? err.message : "Could not delete this record.");
+				toast.error(err instanceof ApiError ? err.message : "Could not delete this record.");
 			})
 			.finally(() => setDeleting(false));
 	};
@@ -291,18 +280,6 @@ function ResourceView({ slug }) {
 					Select a row to see or edit every field stored for that record.
 				</p>
 			</div>
-
-			{error && (
-				<div className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
-					{error}
-				</div>
-			)}
-
-			{notice && (
-				<div className="rounded-lg border border-lu-green/30 bg-lu-green/10 px-4 py-3 text-sm font-medium text-lu-green">
-					{notice}
-				</div>
-			)}
 
 			<div className="overflow-hidden rounded-xl border border-lu-green/15 bg-white">
 				<div className="overflow-x-auto">
