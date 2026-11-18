@@ -58,9 +58,7 @@ async function findOrCreateDemoPublic() {
 }
 
 export const loginAdminDemo = asyncHandler(async (_req, res) => {
-	if (config.isProduction) {
-		// Demo login can be disabled in production by omitting the seed credentials,
-		// but we also guard it explicitly to avoid accidental exposure.
+	if (config.isProduction && !config.ENABLE_DEMO_LOGIN) {
 		throw ApiError.forbidden("Demo login is not available");
 	}
 	const user = await findOrCreateDemoAdmin();
@@ -69,7 +67,7 @@ export const loginAdminDemo = asyncHandler(async (_req, res) => {
 });
 
 export const loginPublicDemo = asyncHandler(async (_req, res) => {
-	if (config.isProduction) {
+	if (config.isProduction && !config.ENABLE_DEMO_LOGIN) {
 		throw ApiError.forbidden("Demo login is not available");
 	}
 	const user = await findOrCreateDemoPublic();

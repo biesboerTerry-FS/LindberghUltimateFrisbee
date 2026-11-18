@@ -45,6 +45,7 @@ const envSchema = z.object({
 	SEED_DEMO_ADMIN_PASSWORD: z.string().min(8).default("DemoAdmin123!"),
 	SEED_DEMO_PUBLIC_EMAIL: z.string().email().default("demo@lindberghultimate.com"),
 	SEED_DEMO_PUBLIC_PASSWORD: z.string().min(8).default("DemoPublic123!"),
+	ENABLE_DEMO_LOGIN: booleanFromString.default(false),
 	// Public site URL the frontend runs on (used as OAuth redirect target).
 	FRONTEND_URL: z.string().url().optional(),
 	// Public API URL (used to build OAuth callback URLs when unset).
