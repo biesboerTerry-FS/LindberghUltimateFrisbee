@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-	fetchMe,
-	storePublicToken,
-	storeToken,
-} from "../../lib/api";
+import { fetchMe, storeToken } from "../../lib/api";
 
 function parseHash() {
 	const hash = window.location.hash.replace(/^#/, "");
 	return new URLSearchParams(hash);
 }
 
+/**
+ * Shared OAuth callback. Public sign-in has been removed from the site, so
+ * only the ADMIN audience is handled here. Any non-admin callback returns
+ * to the home page.
+ */
 export default function AuthCallback() {
 	const navigate = useNavigate();
 	const [error, setError] = useState("");
@@ -23,17 +24,22 @@ export default function AuthCallback() {
 		(async () => {
 			const params = parseHash();
 			const token = params.get("token");
-			const audience = params.get("audience") || "public";
-			const returnTo = params.get("returnTo") || (audience === "admin" ? "/admin" : "/account");
+			const audience = params.get("audience");
+			const returnTo = params.get("returnTo") || "/admin";
 			const hashError = params.get("error");
 
-			if (hashError) {
-				// Stay on the callback page briefly, then send the user to the
-				// right sign-in screen with the error in the query string.
+			if (audience !== "admin") {
+				// Public auth UI was removed; nothing to process for this audience.
 				window.location.hash = "";
-				navigate(`${audience === "admin" ? "/admin/login" : "/login"}?error=${encodeURIComponent(hashError)}`, {
-					replace: true,
-				});
+				navigate("/", { replace: true });
+				return;
+			}
+
+			if (hashError) {
+				// Stay on the callback page briefly, then return to admin login
+				// with the error in the query string.
+				window.location.hash = "";
+				navigate(`/admin/login?error=${encodeURIComponent(hashError)}`, { replace: true });
 				return;
 			}
 
@@ -43,23 +49,17 @@ export default function AuthCallback() {
 			}
 
 			try {
-				if (audience === "admin") {
-					storeToken(token);
-					// Let the admin provider validate on next mount; if this throws
-					// synchronously the fallback below still lands on /admin, where
-					// RequireAuth will send the user to /admin/login.
-					try {
-						await fetchMe(token);
-					} catch {
-						// Invalid staff token — /admin will bounce to login.
-					}
-					window.location.hash = "";
-					navigate(returnTo || "/admin", { replace: true });
-				} else {
-					storePublicToken(token);
-					window.location.hash = "";
-					navigate(returnTo || "/account", { replace: true });
+				storeToken(token);
+				// Let the admin provider validate on next mount; if this throws
+				// synchronously the fallback below still lands on /admin, where
+				// RequireAuth will send the user to /admin/login.
+				try {
+					await fetchMe(token);
+				} catch {
+					// Invalid staff token — /admin will bounce to login.
 				}
+				window.location.hash = "";
+				navigate(returnTo || "/admin", { replace: true });
 			} catch {
 				setError("Sign-in failed. Please try again.");
 			}
@@ -73,8 +73,8 @@ export default function AuthCallback() {
 					<h1 className="font-display text-2xl font-bold uppercase text-lu-yellow">Sign-in failed</h1>
 					<p className="mt-3 text-sm">{error}</p>
 					<p className="mt-5">
-						<a href="/login" className="text-sm text-lu-yellow underline hover:text-white">
-							Try again
+						<a href="/admin/login" className="text-sm text-lu-yellow underline hover:text-white">
+							Back to admin login
 						</a>
 					</p>
 				</div>
@@ -84,7 +84,7 @@ export default function AuthCallback() {
 
 	return (
 		<div className="flex min-h-screen items-center justify-center bg-lu-green px-6 py-16 font-body text-lu-cream">
-			<p>Finishing sign-in…</p>
+			<p>Finishing admin sign-in…</p>
 		</div>
 	);
 }

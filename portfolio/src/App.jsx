@@ -21,10 +21,7 @@ import Families from "./pages/Families";
 import Sitemap from "./pages/Sitemap";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
-import Login from "./pages/Auth/Login";
 import AuthCallback from "./pages/Auth/AuthCallback";
-import Account from "./pages/Auth/Account";
-import PublicAuthProvider from "./auth/PublicAuthProvider";
 import AdminRoutes from "./admin/AdminRoutes";
 
 function Layout({ children }) {
@@ -39,32 +36,29 @@ function Layout({ children }) {
 
 function App() {
 	return (
-		<PublicAuthProvider>
-			<Routes>
-				<Route path="/" element={<Layout><Home /></Layout>} />
-				<Route path="/interest-form" element={<Layout><QuickInterest /></Layout>} />
-				<Route path="/high-school" element={<Layout><HighSchool /></Layout>} />
-				<Route path="/coaching-apprenticeship" element={<Layout><CoachingApprenticeship /></Layout>} />
-				<Route path="/middle-school" element={<Layout><MiddleSchool /></Layout>} />
-				<Route path="/fundraiser" element={<Fundraiser />} />
-				<Route path="/registration" element={<Layout><RegistrationForm /></Layout>} />
-				<Route path="/calendar" element={<Layout><Calendar2026 /></Layout>} />
-				<Route path="/booster-club" element={<Layout><BoosterClub /></Layout>} />
-				<Route path="/sportsyou" element={<Layout><SportsYou /></Layout>} />
-				<Route path="/usa-ultimate" element={<Layout><USUltimate /></Layout>} />
-				<Route path="/play-opportunities" element={<Layout><PlayOpportunities /></Layout>} />
-				<Route path="/media" element={<Layout><Media /></Layout>} />
-				<Route path="/power-lunch" element={<Layout><PowerLunch /></Layout>} />
-				<Route path="/families" element={<Layout><Families /></Layout>} />
-				<Route path="/sitemap" element={<Layout><Sitemap /></Layout>} />
-				<Route path="/terms" element={<Layout><Terms /></Layout>} />
-				<Route path="/privacy" element={<Layout><Privacy /></Layout>} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/auth/callback" element={<AuthCallback />} />
-				<Route path="/account" element={<Layout><Account /></Layout>} />
-				<Route path="/admin/*" element={<AdminRoutes />} />
-			</Routes>
-		</PublicAuthProvider>
+		<Routes>
+			<Route path="/" element={<Layout><Home /></Layout>} />
+			<Route path="/interest-form" element={<Layout><QuickInterest /></Layout>} />
+			<Route path="/high-school" element={<Layout><HighSchool /></Layout>} />
+			<Route path="/coaching-apprenticeship" element={<Layout><CoachingApprenticeship /></Layout>} />
+			<Route path="/middle-school" element={<Layout><MiddleSchool /></Layout>} />
+			<Route path="/fundraiser" element={<Fundraiser />} />
+			<Route path="/registration" element={<Layout><RegistrationForm /></Layout>} />
+			<Route path="/calendar" element={<Layout><Calendar2026 /></Layout>} />
+			<Route path="/booster-club" element={<Layout><BoosterClub /></Layout>} />
+			<Route path="/sportsyou" element={<Layout><SportsYou /></Layout>} />
+			<Route path="/usa-ultimate" element={<Layout><USUltimate /></Layout>} />
+			<Route path="/play-opportunities" element={<Layout><PlayOpportunities /></Layout>} />
+			<Route path="/media" element={<Layout><Media /></Layout>} />
+			<Route path="/power-lunch" element={<Layout><PowerLunch /></Layout>} />
+			<Route path="/families" element={<Layout><Families /></Layout>} />
+			<Route path="/sitemap" element={<Layout><Sitemap /></Layout>} />
+			<Route path="/terms" element={<Layout><Terms /></Layout>} />
+			<Route path="/privacy" element={<Layout><Privacy /></Layout>} />
+			{/* Shared OAuth callback: used by the ADMIN sign-in flow only. */}
+			<Route path="/auth/callback" element={<AuthCallback />} />
+			<Route path="/admin/*" element={<AdminRoutes />} />
+		</Routes>
 	);
 }
 
