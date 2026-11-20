@@ -242,3 +242,76 @@ html.dark [data-sonner-toaster][data-sonner-theme] {
 		animation: none;
 	}
 }
+
+/* ==========================================================================
+   Dark theme
+
+   The site is built almost entirely from the lu-* palette utilities
+   (`bg-lu-green`, `bg-lu-cream`, `text-lu-ink`, `text-lu-green`, …). Those
+   utilities are plain CSS classes, so we can repaint every surface at once by
+   overriding the utilities themselves when `.dark` is on <html>. This keeps
+   the light theme pixel-identical while giving dark mode real contrast:
+   deep-green page/section backgrounds, raised dark cards, and light text.
+
+   These rules live outside @layer and use `html.dark` + !important so they
+   reliably win over Tailwind's generated utilities (including variants).
+   ========================================================================== */
+html.dark {
+	--lu-dark-page: #06140c;
+	--lu-dark-surface: #102219;
+	--lu-dark-surface-2: #183226;
+	--lu-dark-ink: #e6efe8;
+	--lu-dark-heading: #93e2b2;
+
+	/* Body text and its /NN opacity variants (text-lu-ink/70 etc.) all read
+	   this variable, so flipping it flips every muted paragraph too. */
+	--color-lu-ink: #e6efe8;
+}
+
+html.dark body {
+	background-color: var(--lu-dark-page) !important;
+}
+
+/* Brand-green sections (hero, navbar, admin header) become near-black green. */
+html.dark :is(.bg-lu-green, .bg-lu-deep, .bg-lu-dark) {
+	background-color: var(--lu-dark-page) !important;
+}
+
+/* Cream/white content cards become raised dark surfaces. */
+html.dark :is(.bg-lu-cream, .bg-white, .bg-\[\#f9f9f9\], .bg-\[\#e8f0e9\]) {
+	background-color: var(--lu-dark-surface) !important;
+}
+
+html.dark :is(.hover\:bg-white:hover, .focus\:bg-white:focus, .hover\:bg-lu-cream:hover, .focus\:bg-lu-cream:focus) {
+	background-color: var(--lu-dark-surface-2) !important;
+}
+
+/* Headings/links that used brand green or deep green become light mint. */
+html.dark :is(.text-lu-green, .text-lu-dark, .text-\[\#1c6a37\], .text-\[\#123d24\]) {
+	color: var(--lu-dark-heading) !important;
+}
+
+html.dark :is(.hover\:text-lu-green:hover, .hover\:text-lu-dark:hover) {
+	color: #bdf3d0 !important;
+}
+
+/* Lindbergh yellow stays an accent, but it needs dark text on solid yellow. */
+html.dark :is(.bg-lu-yellow, .hover\:bg-lu-yellow:hover) {
+	color: #10281a !important;
+}
+
+html.dark :is(.bg-lu-yellow\/10, .bg-lu-yellow\/20, .bg-lu-yellow\/30) {
+	color: #ffe486 !important;
+}
+
+html.dark ::placeholder {
+	color: #8fa99a !important;
+}
+
+/* Keep the animated word-cloud readable, but dim its green backdrop. */
+html.dark .word-cloud-backdrop {
+	background:
+		radial-gradient(95% 125% at 8% 2%, rgba(52, 150, 92, 0.3) 0%, transparent 58%),
+		radial-gradient(105% 135% at 95% 96%, rgba(20, 70, 42, 0.75) 0%, transparent 62%),
+		linear-gradient(135deg, #030d07 0%, #0b2a17 50%, #04170c 100%);
+}
