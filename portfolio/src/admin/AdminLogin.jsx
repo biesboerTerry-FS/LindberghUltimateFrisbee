@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,11 +6,10 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../assets/ultimateLogoTransparent.png";
 import { ApiError, loginAdminDemo } from "../lib/api";
 import { useAdminAuth } from "./AdminAuthContext";
-import OAuthButtons from "../components/OAuthButtons";
 
 /**
  * Admin sign-in screen.
- * Supports email/password login and OAuth, then redirects to the requested admin route.
+ * Supports email/password login and a one-click demo, then redirects to the requested admin route.
  */
 export default function AdminLogin() {
 	const { signIn, signInWithToken, user, checking } = useAdminAuth();
@@ -25,15 +24,6 @@ export default function AdminLogin() {
 	useEffect(() => {
 		if (user) navigate(redirectTo, { replace: true });
 	}, [user, navigate, redirectTo]);
-
-	const queryError = useMemo(
-		() => new URLSearchParams(location.search).get("error"),
-		[location.search],
-	);
-
-	useEffect(() => {
-		if (queryError) toast.error(queryError);
-	}, [queryError]);
 
 	/** Submit email/password credentials and surface API validation errors. */
 	const handleSubmit = async (e) => {
@@ -97,20 +87,11 @@ export default function AdminLogin() {
 					</p>
 					<h1 className="font-display text-3xl font-bold uppercase">Admin Panel</h1>
 					<p className="mt-3 text-sm text-lu-cream/70">
-						Administrator access only. Sign in with the program admin account or with an
-						authorized Google/Apple account.
+						Administrator access only. Sign in with the program admin account.
 					</p>
 				</div>
 
 				<div className="flex flex-col gap-5 rounded-2xl border border-lu-yellow/50 bg-white/10 p-6">
-					<OAuthButtons audience="admin" returnTo={redirectTo} variant="light" />
-
-					<div className="flex items-center gap-3 text-xs uppercase tracking-widest text-lu-cream/60">
-						<span className="h-px flex-1 bg-lu-cream/20" aria-hidden="true" />
-						<span>Email</span>
-						<span className="h-px flex-1 bg-lu-cream/20" aria-hidden="true" />
-					</div>
-
 					<form onSubmit={handleSubmit} className="flex flex-col gap-5">
 						<div>
 							<label htmlFor="admin-email" className="mb-1 block font-body font-medium">

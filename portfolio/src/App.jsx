@@ -21,7 +21,6 @@ import Families from "./pages/Families";
 import Sitemap from "./pages/Sitemap";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
-import AuthCallback from "./pages/Auth/AuthCallback";
 import AdminRoutes from "./admin/AdminRoutes";
 
 function Layout({ children }) {
@@ -55,8 +54,6 @@ function App() {
 			<Route path="/sitemap" element={<Layout><Sitemap /></Layout>} />
 			<Route path="/terms" element={<Layout><Terms /></Layout>} />
 			<Route path="/privacy" element={<Layout><Privacy /></Layout>} />
-			{/* Shared OAuth callback: used by the ADMIN sign-in flow only. */}
-			<Route path="/auth/callback" element={<AuthCallback />} />
 			<Route path="/admin/*" element={<AdminRoutes />} />
 		</Routes>
 	);
