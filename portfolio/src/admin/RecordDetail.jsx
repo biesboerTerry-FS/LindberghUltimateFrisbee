@@ -87,7 +87,7 @@ function ValueView({ value, depth = 0 }) {
 
 	if (value && typeof value === "object") {
 		if (depth >= 3) {
-			return <code className="text-xs break-all">{JSON.stringify(value)}</code>;
+			return <span className="text-lu-ink/60">{displayName(value) || "Nested record"}</span>;
 		}
 		return <ObjectFields record={value} depth={depth + 1} />;
 	}
@@ -118,7 +118,7 @@ function ObjectFields({ record, depth = 0 }) {
 
 /**
  * Slide-over drawer that fetches and displays a full record.
- * Provides edit/delete actions and a raw JSON view.
+ * Provides edit/delete actions and a formatted field view.
  */
 export default function RecordDetail({
 	slug,
@@ -226,13 +226,6 @@ export default function RecordDetail({
 							<section className="rounded-xl border border-lu-green/15 bg-white p-4">
 								<ObjectFields record={record} />
 							</section>
-
-							<details className="rounded-xl border border-lu-green/15 bg-white p-4">
-								<summary className="cursor-pointer font-roboto text-sm font-semibold text-lu-dark">Raw JSON</summary>
-								<pre className="mt-3 max-h-96 overflow-auto rounded-lg bg-lu-dark p-3 text-xs text-lu-cream">
-									{JSON.stringify(record, null, 2)}
-								</pre>
-							</details>
 						</div>
 					)}
 				</div>
