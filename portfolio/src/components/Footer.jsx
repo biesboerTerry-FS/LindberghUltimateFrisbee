@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import {
 	faClipboardList,
+	faCookieBite,
 	faEnvelope,
 	faFileContract,
 	faShieldHalved,
@@ -10,6 +11,7 @@ import {
 	faUserShield,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { openConsentSettings } from "../lib/cookieConsent";
 
 const Footer = () => {
 	return (
@@ -88,6 +90,16 @@ const Footer = () => {
 								<FontAwesomeIcon icon={faShieldHalved} aria-hidden="true" />
 								Privacy Policy
 							</Link>
+						</li>
+						<li>
+							<button
+								type="button"
+								onClick={openConsentSettings}
+								className="inline-flex items-center gap-2 font-medium transition-colors hover:text-green-300"
+							>
+								<FontAwesomeIcon icon={faCookieBite} aria-hidden="true" />
+								Cookie settings
+							</button>
 						</li>
 					</ul>
 				</nav>

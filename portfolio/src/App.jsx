@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import "./index.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import CookieConsent from "./components/CookieConsent";
 import Home from "./pages/Home";
 import QuickInterest from "./pages/QuickInterest";
 import Fundraiser from "./pages/Fundraiser";
@@ -30,6 +31,7 @@ function Layout({ children }) {
 			<Header />
 			<main className="grow">{children}</main>
 			<Footer />
+			<CookieConsent />
 		</div>
 	);
 }

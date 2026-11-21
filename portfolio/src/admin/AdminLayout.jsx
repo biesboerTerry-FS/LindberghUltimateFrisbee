@@ -49,9 +49,8 @@ export default function AdminLayout() {
 		group.resources.some((slug) => location.pathname.startsWith(`/admin/${slug}`))
 	)?.label;
 
-	const [openGroups, setOpenGroups] = useState(
-		() => new Set(activeGroupLabel ? [activeGroupLabel] : [])
-	);
+	// Categories start collapsed; the active group is highlighted but not expanded.
+	const [openGroups, setOpenGroups] = useState(() => new Set());
 
 	/** Toggle expansion state for a sidebar navigation group. */
 	const toggleGroup = (label) => {
@@ -84,7 +83,7 @@ export default function AdminLayout() {
 
 			<aside
 				id="admin-sidebar"
-				className={`fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto border-r border-lu-yellow/20 bg-lu-dark text-lu-cream transition-transform duration-200 lg:static lg:translate-x-0 ${
+				className={`fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto border-r border-lu-yellow/20 bg-lu-dark text-lu-cream transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
 					menuOpen ? "translate-x-0" : "-translate-x-full"
 				}`}
 			>
