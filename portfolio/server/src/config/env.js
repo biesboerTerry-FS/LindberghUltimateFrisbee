@@ -20,6 +20,14 @@ const emptyToUndefined = (value) =>
 const optionalString = (min = 1) =>
 	z.preprocess(emptyToUndefined, z.string().trim().min(min).optional());
 
+// Local convenience only. Production must always define JWT_SECRET explicitly.
+const DEV_JWT_SECRET = "dev-only-secret-change-before-production";
+const WEAK_JWT_SECRETS = new Set([
+	DEV_JWT_SECRET.toLowerCase(),
+	"change-me-before-production",
+	"please-change-this-secret",
+]);
+
 const envSchema = z.object({
 	NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 	PORT: z.coerce.number().int().positive().default(5050),
@@ -28,7 +36,7 @@ const envSchema = z.object({
 		.min(1)
 		.default("mongodb://127.0.0.1:27017/lindbergh_ultimate"),
 	MONGODB_DB_NAME: z.string().min(1).default("lindbergh_ultimate"),
-	JWT_SECRET: z.string().min(16).default("dev-only-secret-change-before-production"),
+	JWT_SECRET: z.string().min(16).default(DEV_JWT_SECRET),
 	JWT_EXPIRES_IN: z.string().default("7d"),
 	ADMIN_API_KEY: z.string().min(8).optional(),
 	CORS_ORIGINS: z.string().default(
@@ -37,6 +45,7 @@ const envSchema = z.object({
 	RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(15 * 60 * 1000),
 	RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
 	PUBLIC_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(30),
+	AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(20),
 	LOG_FORMAT: z.string().default("dev"),
 	SEED_ADMIN_EMAIL: z.string().email().default("admin@example.com"),
 	SEED_ADMIN_PASSWORD: z.string().min(8).default("ChangeMe123!"),
@@ -82,8 +91,19 @@ const env = result.data;
 
 export const isProduction = env.NODE_ENV === "production";
 
-if (isProduction && env.JWT_SECRET.startsWith("dev-only")) {
-	throw new Error("JWT_SECRET must be set to a secure value in production.");
+if (isProduction) {
+	// Never allow the checked-in development fallback (or another weak value)
+	// to sign privileged admin tokens in a deployed environment.
+	if (
+		!process.env.JWT_SECRET ||
+		env.JWT_SECRET.startsWith("dev-only") ||
+		env.JWT_SECRET.length < 32 ||
+		WEAK_JWT_SECRETS.has(env.JWT_SECRET.toLowerCase())
+	) {
+		throw new Error(
+			"JWT_SECRET must be set to a strong random value (32+ characters) in production.",
+		);
+	}
 }
 
 export const config = {

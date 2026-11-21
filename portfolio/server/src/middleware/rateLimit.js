@@ -8,7 +8,11 @@ function buildLimiter({ windowMs, max, message }) {
 		standardHeaders: "draft-8",
 		legacyHeaders: false,
 		message: { success: false, message },
-		skip: (req) => req.path === "/api/health" || config.NODE_ENV === "test",
+		// Mounted under /api, so Express strips the prefix from `req.path`.
+		skip: (req) =>
+			req.path === "/health" ||
+			req.path === "/api/health" ||
+			config.NODE_ENV === "test",
 	});
 }
 
@@ -25,4 +29,14 @@ export const publicSubmissionLimiter = buildLimiter({
 	windowMs: config.RATE_LIMIT_WINDOW_MS,
 	max: config.PUBLIC_RATE_LIMIT_MAX,
 	message: "Too many submissions. Please try again later.",
+});
+
+/**
+ * Login and demo-login endpoints issue tokens, so they get the strictest
+ * limit to slow credential stuffing and token farming.
+ */
+export const authLimiter = buildLimiter({
+	windowMs: config.RATE_LIMIT_WINDOW_MS,
+	max: config.AUTH_RATE_LIMIT_MAX,
+	message: "Too many login attempts. Please try again later.",
 });

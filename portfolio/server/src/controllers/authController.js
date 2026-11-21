@@ -27,19 +27,12 @@ export const login = asyncHandler(async (req, res) => {
 });
 
 export const me = asyncHandler(async (req, res) => {
-	if (req.user.via === "api-key") {
-		res.json({ success: true, data: { id: "api-key", role: "admin", via: "api-key" } });
-		return;
-	}
 	const user = await User.findById(req.user.id).populate("coach", "firstName lastName title");
 	if (!user) throw ApiError.notFound("User not found");
 	res.json({ success: true, data: user });
 });
 
 export const changePassword = asyncHandler(async (req, res) => {
-	if (req.user.via === "api-key") {
-		throw ApiError.badRequest("The shared API key does not have a password");
-	}
 	const { currentPassword, newPassword } = req.body;
 	const user = await User.findById(req.user.id).select("+passwordHash");
 	if (!user) throw ApiError.notFound("User not found");

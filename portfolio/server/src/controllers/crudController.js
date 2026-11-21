@@ -1,5 +1,6 @@
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { requireObjectBody } from "../middleware/validate.js";
 import { buildFilter, buildSearch, parseSort } from "../utils/query.js";
 import { buildPaginationMeta, parsePagination } from "../utils/pagination.js";
 
@@ -95,8 +96,8 @@ export function createCrudRouter(router, path, options) {
 	const controller = createCrudController(options);
 	router.get(path, controller.list);
 	router.get(`${path}/:id`, controller.getById);
-	router.post(path, controller.create);
-	router.patch(`${path}/:id`, controller.update);
+	router.post(path, requireObjectBody(), controller.create);
+	router.patch(`${path}/:id`, requireObjectBody(), controller.update);
 	router.delete(`${path}/:id`, controller.remove);
 	return router;
 }

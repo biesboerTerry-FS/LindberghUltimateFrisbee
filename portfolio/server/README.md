@@ -183,11 +183,11 @@ server/
 | `PORT` | API port (default `5050`) |
 | `MONGODB_URI` | Atlas `mongodb+srv://` connection string (or local Mongo URI) |
 | `MONGODB_DB_NAME` | Optional database override |
-| `JWT_SECRET` | Signing key for admin JWTs (16+ chars) |
+| `JWT_SECRET` | Signing key for JWTs (32+ chars in production; no dev fallback) |
 | `JWT_EXPIRES_IN` | Token lifetime (default `7d`) |
-| `ADMIN_API_KEY` | Optional shared key for scripts (`x-api-key`) |
 | `CORS_ORIGINS` | Comma-separated allowed origins; local ports 5173 and 5174 are included by default. Add your production frontend origin. |
 | `RATE_LIMIT_*` | Global / public form limits |
+| `AUTH_RATE_LIMIT_MAX` | Login / demo-login attempt limit per window |
 | `SEED_ADMIN_EMAIL` | Single Admin Panel email |
 | `SEED_ADMIN_PASSWORD` | Single Admin Panel password |
 | `SEED_DEMO_DATA` | Add sample players/parents/donations |
@@ -204,10 +204,9 @@ curl -X POST http://localhost:5050/api/auth/login \
 
 Send the returned token as `Authorization: Bearer <token>`.
 
-Scripts may instead send `x-api-key: <ADMIN_API_KEY>` (or use it as the bearer
-token). The API key maps to the `admin` role. User-management routes require
-the `admin` role. The Admin Panel seeds one administrator; no coach login is
-created.
+All admin routes require that JWT — there is no shared API-key bypass. User-
+management routes additionally require the `admin` role. The Admin Panel seeds
+one administrator; no coach login is created.
 
 ## Data models
 
@@ -443,7 +442,7 @@ database behavior.
 ## Production notes
 
 - Use a managed MongoDB (Atlas) and set `MONGODB_URI` to the SRV string.
-- Set a long random `JWT_SECRET`; remove `ADMIN_API_KEY` or rotate it.
+- Set a long random `JWT_SECRET` (32+ characters); the local dev fallback is rejected at startup in production.
 - Restrict `CORS_ORIGINS` to the deployed frontend origin.
 - Put the API behind HTTPS/reverse proxy and keep `trust proxy` behaviour in
   mind for rate limiting.

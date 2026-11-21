@@ -5,25 +5,46 @@ import { PublicUser } from "../models/PublicUser.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+// Pin the algorithm and scope: a token for another app (or a token with a
+// different claim set) must never grant access to the admin API.
+const TOKEN_ALGORITHMS = ["HS256"];
+const TOKEN_ISSUER = "lindbergh-ultimate-api";
+const TOKEN_AUDIENCE = "lindbergh-ultimate-client";
+
+const VERIFY_OPTIONS = {
+	algorithms: TOKEN_ALGORITHMS,
+	issuer: TOKEN_ISSUER,
+	audience: TOKEN_AUDIENCE,
+};
+
 function extractToken(req) {
 	const header = req.get("authorization") || "";
 	if (header.toLowerCase().startsWith("bearer ")) {
-		return header.slice(7).trim();
+		return header.slice(7).trim() || null;
 	}
-	return req.get("x-api-key") || null;
+	// Tokens are only read from the Authorization header — never from a query
+	// string or cookie, which could leak into logs/referrers.
+	return null;
+}
+
+function verifyToken(token) {
+	try {
+		return jwt.verify(token, config.JWT_SECRET, VERIFY_OPTIONS);
+	} catch {
+		throw ApiError.unauthorized("Invalid or expired token");
+	}
 }
 
 function getTokenKind(payload) {
 	if (payload.kind === "public") return "public";
 	if (payload.kind === "admin") return "admin";
-	// Tokens issued before OAuth landed carry no `kind`.
+	// Legacy tokens (issued before `kind` existed) were staff tokens only.
 	return "admin";
 }
 
 /**
  * Authenticates staff (`admin` kind) API calls. Rejects public OAuth tokens.
- * Accepts either a JWT issued by /api/auth/login or the shared ADMIN_API_KEY.
- * The API key is intended for scripts and local tooling only.
+ * Only a signed, unexpired admin JWT is accepted — no shared API key fallback.
  */
 export const authenticate = asyncHandler(async (req, _res, next) => {
 	const token = extractToken(req);
@@ -32,20 +53,13 @@ export const authenticate = asyncHandler(async (req, _res, next) => {
 		throw ApiError.unauthorized("Authentication required");
 	}
 
-	if (config.ADMIN_API_KEY && token === config.ADMIN_API_KEY) {
-		req.user = { id: "api-key", role: "admin", kind: "admin", via: "api-key" };
-		return next();
-	}
+	const payload = verifyToken(token);
 
-	let payload;
-	try {
-		payload = jwt.verify(token, config.JWT_SECRET);
-	} catch {
-		throw ApiError.unauthorized("Invalid or expired token");
-	}
-
-	if (getTokenKind(payload) === "public") {
+	if (getTokenKind(payload) !== "admin") {
 		throw ApiError.forbidden("Staff access required");
+	}
+	if (typeof payload.sub !== "string" || !payload.sub) {
+		throw ApiError.unauthorized("Invalid token subject");
 	}
 
 	const user = await User.findById(payload.sub);
@@ -70,15 +84,13 @@ export const authenticatePublic = asyncHandler(async (req, _res, next) => {
 		throw ApiError.unauthorized("Authentication required");
 	}
 
-	let payload;
-	try {
-		payload = jwt.verify(token, config.JWT_SECRET);
-	} catch {
-		throw ApiError.unauthorized("Invalid or expired token");
-	}
+	const payload = verifyToken(token);
 
 	if (getTokenKind(payload) !== "public") {
 		throw ApiError.forbidden("Public sign-in required");
+	}
+	if (typeof payload.sub !== "string" || !payload.sub) {
+		throw ApiError.unauthorized("Invalid token subject");
 	}
 
 	const user = await PublicUser.findById(payload.sub);
@@ -111,6 +123,11 @@ export function signToken(user, { kind = "admin" } = {}) {
 			kind,
 		},
 		config.JWT_SECRET,
-		{ expiresIn: config.JWT_EXPIRES_IN },
+		{
+			algorithm: "HS256",
+			expiresIn: config.JWT_EXPIRES_IN,
+			issuer: TOKEN_ISSUER,
+			audience: TOKEN_AUDIENCE,
+		},
 	);
 }

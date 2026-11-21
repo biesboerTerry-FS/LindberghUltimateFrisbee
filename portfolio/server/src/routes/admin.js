@@ -14,6 +14,8 @@ import {
 	updateUser,
 } from "../controllers/adminUserController.js";
 import { ADMIN_RESOURCES } from "../config/adminResources.js";
+import { requireObjectBody, validateBody } from "../middleware/validate.js";
+import { adminUserCreateSchema, adminUserUpdateSchema } from "../validators/admin.js";
 import { buildAdminMeta } from "../utils/schemaMeta.js";
 
 const router = Router();
@@ -31,14 +33,33 @@ for (const { slug, model, options } of ADMIN_RESOURCES) {
 	createCrudRouter(router, `/${slug}`, { model, ...options });
 }
 
-// Workflow actions (kept outside the generic CRUD router).
-router.post("/registrations/:id/approve", approveRegistrationHandler);
-router.post("/interest-submissions/:id/convert", convertInterestHandler);
+// Workflow actions (kept outside the generic CRUD router). They act on the
+// id in the URL, so an empty body is allowed but malformed bodies are not.
+router.post(
+	"/registrations/:id/approve",
+	requireObjectBody({ allowEmpty: true }),
+	approveRegistrationHandler,
+);
+router.post(
+	"/interest-submissions/:id/convert",
+	requireObjectBody({ allowEmpty: true }),
+	convertInterestHandler,
+);
 
 router.get("/users", authorize("admin"), listUsers);
 router.get("/users/:id", authorize("admin"), getUser);
-router.post("/users", authorize("admin"), createUser);
-router.patch("/users/:id", authorize("admin"), updateUser);
+router.post(
+	"/users",
+	authorize("admin"),
+	validateBody(adminUserCreateSchema),
+	createUser,
+);
+router.patch(
+	"/users/:id",
+	authorize("admin"),
+	validateBody(adminUserUpdateSchema),
+	updateUser,
+);
 router.delete("/users/:id", authorize("admin"), deleteUser);
 
 export default router;

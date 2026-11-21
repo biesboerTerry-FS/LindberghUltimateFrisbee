@@ -232,12 +232,31 @@ export const contactMessageSchema = z.object({
 	source: optionalText(120),
 });
 
-export const loginSchema = z.object({
-	email: z.string().trim().toLowerCase().email("Enter a valid email address"),
-	password: z.string().min(8, "Password must be at least 8 characters"),
-});
+export const loginSchema = z
+	.object({
+		email: z
+			.string()
+			.trim()
+			.toLowerCase()
+			.email("Enter a valid email address")
+			.max(254),
+		password: z
+			.string()
+			.min(8, "Password must be at least 8 characters")
+			.max(128, "Password is too long"),
+	})
+	.strict();
 
-export const changePasswordSchema = z.object({
-	currentPassword: z.string().min(8),
-	newPassword: z.string().min(8, "Password must be at least 8 characters"),
-});
+export const changePasswordSchema = z
+	.object({
+		currentPassword: z.string().min(8).max(128),
+		newPassword: z
+			.string()
+			.min(8, "Password must be at least 8 characters")
+			.max(128, "Password is too long"),
+	})
+	.strict()
+	.refine((data) => data.newPassword !== data.currentPassword, {
+		path: ["newPassword"],
+		message: "New password must be different from the current password",
+	});

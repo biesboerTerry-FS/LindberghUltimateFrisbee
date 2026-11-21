@@ -34,6 +34,12 @@ export function errorHandler(error, req, res, _next) {
 	} else if (error?.name === "JsonWebTokenError" || error?.name === "TokenExpiredError") {
 		statusCode = 401;
 		message = "Invalid or expired token";
+	} else if (error?.type === "entity.parse.failed") {
+		statusCode = 400;
+		message = "Malformed request body";
+	} else if (error?.type === "entity.too.large") {
+		statusCode = 413;
+		message = "Request body too large";
 	}
 
 	if (statusCode >= 500) {
