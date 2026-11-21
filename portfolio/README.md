@@ -5,7 +5,8 @@ Express + MongoDB Atlas backend and a single-administrator Admin Panel.
 
 The public site includes the team word-cloud image, program pages—including
 the Coaching Apprenticeship page—media galleries, registration/interest forms,
-and the Admin Panel at `/admin`.
+a light/dark theme toggle, and the Admin Panel at `/admin`. The public site has
+no visitor accounts; only the Admin Panel requires a sign-in.
 
 ## Stack
 
@@ -19,9 +20,6 @@ and the Admin Panel at `/admin`.
 
 ## Repository layout
 
-This app lives at `dev/portfolio` in the course repository. The paths below are
-relative to this folder.
-
 ```text
 .
 ├── src/                    React frontend
@@ -29,6 +27,7 @@ relative to this folder.
 │   ├── assets/             Site images
 │   ├── components/         Shared sections and layout
 │   ├── pages/              Public routes
+│   ├── theme/              Light/dark theme provider and toggle
 │   └── lib/api.js          API client
 ├── public/                 Favicons and static files
 ├── server/                 Express + MongoDB API
@@ -101,17 +100,19 @@ in `server/.env.example` are placeholders; **change the password and
 
 `npm run seed` creates or refreshes the admin account. Use
 `npm run seed:admin` if you only want to reset the login without touching site
-content.
+content. The login screen also offers a **Try demo admin** button for visitors
+who want to explore the panel without credentials.
 
 The Admin Panel includes a dashboard and searchable, paginated tables for
 players, parents, coaches, teams, seasons, registrations, interest forms,
 schedules, email lists/subscribers/campaigns, booster members, fundraiser
 campaigns, donations, testimonials, FAQs, highlights, galleries, media, site
-settings, and the contact inbox. Selecting a row opens every stored field,
-including populated references and raw JSON. Records can be created, edited,
-and deleted from the same view.
+settings, and the contact inbox. Selecting a row opens every stored field in a
+formatted view with populated references. Records can be created, edited, and
+deleted from the same view.
 
-There is intentionally **one admin login**; no coach login is seeded.
+There is intentionally **one admin login**; no coach login is seeded. Sign-in
+is email/password or the demo button only—there is no OAuth/social sign-in.
 
 ## Seed data
 
@@ -181,14 +182,13 @@ now uses the PNG/ICO files in `public/`.
 
 ## Repository status
 
-This app is part of the course repository at `dev/portfolio`. It is a normal
-directory, not a Git submodule. See the root [`README.md`](../../README.md) for
-the repository overview and
+The app is published at `biesboerTerry-FS/LindberghUltimateFrisbee`. It is a
+normal Git repository, not a submodule. See
 [`GITHUB_MIGRATION_PLAN.md`](./GITHUB_MIGRATION_PLAN.md) for historical
 migration notes.
 
 Do not commit `node_modules`, `dist`, `.env`, `portfolio.zip`, or generated
-assets. The root and app-level `.gitignore` files cover those paths.
+assets. The `.gitignore` files cover those paths.
 
 ## Troubleshooting
 
@@ -242,7 +242,7 @@ lsof -nP -iTCP:5050 -sTCP:LISTEN
 
 ### Vercel deployment
 
-The frontend and API are separate Vercel projects:
+The frontend and API are separate Vercel projects (team `thatdevterry`):
 
 - Frontend: `lindberghultimatefrisbee`
 - API: `fast-cyclone-ney3302`
@@ -250,6 +250,6 @@ The frontend and API are separate Vercel projects:
 - API URL: <https://fast-cyclone-ney3302-terry-biesboers-projects.vercel.app>
 
 The frontend's production `VITE_API_URL` is configured in Vercel as
-`https://fast-cyclone-ney3302-terry-biesboers-projects.vercel.app/api`. The API still requires its
+`https://fast-cyclone-ney3302-terry-biesboers-projects.vercel.app/api`. The API requires its
 production environment variables before database-backed routes can respond:
 see [`server/README.md`](./server/README.md#vercel-api-deployment).

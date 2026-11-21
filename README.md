@@ -1,17 +1,15 @@
-# Development
+# Lindbergh Ultimate
 
-The final project lives in [`portfolio/`](./portfolio/). The duplicate legacy
-frontend has been removed so there is one source of truth.
+This repository contains the Lindbergh Ultimate program website: a React + Vite
+frontend with an Express + MongoDB Atlas backend and a single-administrator
+Admin Panel. The application lives in [`portfolio/`](./portfolio/).
 
 ## Project
 
-- **Application:** [`dev/portfolio/`](./portfolio/)
+- **Application:** [`portfolio/`](./portfolio/)
 - **Frontend README:** [`portfolio/README.md`](./portfolio/README.md)
 - **API README:** [`portfolio/server/README.md`](./portfolio/server/README.md)
-- **Weekly log:** [`docs/log.md`](../docs/log.md)
-- **Research:** [`docs/research/`](../docs/research/)
-- **Wireframes:** [`docs/wires/`](../docs/wires/)
-- **Figma prototype:** [Lindbergh Ultimate design](https://www.figma.com/site/TOze5vN2cIgcQ1yQXx25GB/Lindbergh-Ultimate?node-id=0-1&t=b5QKfFgOkyA7nLAw-1)
+- **Vercel deployment reference:** [`VERCEL_SETUP.md`](./VERCEL_SETUP.md)
 
 ## Run
 
@@ -38,5 +36,6 @@ npm run dev
 
 - `portfolio/` is a normal directory, not a Git submodule.
 - Do not commit `node_modules`, `dist`, `.env`, `portfolio.zip`, or generated
-  assets. The root and app-level `.gitignore` files cover those paths.
-- The app is part of the course repository at `dev/portfolio`.
+  assets. The `.gitignore` files cover those paths.
+- See [`GITHUB_MIGRATION_PLAN.md`](./portfolio/GITHUB_MIGRATION_PLAN.md) for
+  historical migration notes.
