@@ -17,10 +17,16 @@ import { NAV_GROUPS, RESOURCES } from "./resources";
  * @param {string} pathname - Current router pathname.
  * @returns {string} Human-readable page title.
  */
+const PORTAL_PAGES = {
+	orders: "Orders",
+	"portal-messages": "Messages",
+	"portal-schedule": "Schedule",
+};
+
 function pageTitle(pathname) {
 	const slug = pathname.replace(/^\/admin\/?/, "").split("/")[0];
 	if (!slug) return "Dashboard";
-	return RESOURCES[slug]?.label || "Not found";
+	return RESOURCES[slug]?.label || PORTAL_PAGES[slug] || "Not found";
 }
 
 /**
@@ -109,6 +115,36 @@ export default function AdminLayout() {
 					<NavLink to="/admin" end className={linkClass} onClick={() => setMenuOpen(false)}>
 						Dashboard
 					</NavLink>
+
+					<div className="mt-3 space-y-1 border-t border-white/10 pt-3">
+						<p className="px-3 pb-1 text-[10px] uppercase tracking-[0.2em] text-lu-yellow/60">
+							Workspace
+						</p>
+						<NavLink
+							to="/admin/orders"
+							end
+							className={linkClass}
+							onClick={() => setMenuOpen(false)}
+						>
+							Orders
+						</NavLink>
+						<NavLink
+							to="/admin/portal-messages"
+							end
+							className={linkClass}
+							onClick={() => setMenuOpen(false)}
+						>
+							Messages
+						</NavLink>
+						<NavLink
+							to="/admin/portal-schedule"
+							end
+							className={linkClass}
+							onClick={() => setMenuOpen(false)}
+						>
+							Schedule
+						</NavLink>
+					</div>
 
 					{groups.map((group) => {
 						const isOpen = openGroups.has(group.label);

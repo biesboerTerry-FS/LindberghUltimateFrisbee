@@ -185,4 +185,9 @@ export function runResourceAction(resource, id, action) {
 	return postJson(`/admin/${resource}/${id}/${action}`, {}, { token: getStoredToken() });
 }
 
+/** Advance a submission through the fulfilment workflow. */
+export function updateResourceStatus(resource, id, status) {
+	return patchJson(`/admin/${resource}/${id}/status`, { status }, { token: getStoredToken() });
+}
+
 

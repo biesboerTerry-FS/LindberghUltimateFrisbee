@@ -10,6 +10,7 @@ import publicRoutes from "./routes/public.js";
 import adminRoutes from "./routes/admin.js";
 import authRoutes from "./routes/auth.js";
 import oauthRoutes from "./routes/oauth.js";
+import portalRoutes from "./routes/portal.js";
 
 export function createApp() {
 	const app = express();
@@ -52,6 +53,7 @@ export function createApp() {
 	app.use("/api/auth", authRoutes);
 	app.use("/api/auth", oauthRoutes);
 	app.use("/api/admin", adminRoutes);
+	app.use("/api/admin/portal", portalRoutes);
 
 	app.use(notFound);
 	app.use(errorHandler);

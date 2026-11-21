@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { ApiError, fetchDashboard } from "../lib/api";
+import PendingWidget from "../portal/PendingWidget";
+import { useOrders } from "../portal/portalStore";
 import { useAdminAuth } from "./AdminAuthContext";
 import { displayName, formatCurrency, formatDate } from "./format";
 
@@ -73,6 +75,7 @@ function RecentList({ title, items, to, labelKey }) {
  */
 export default function AdminDashboard() {
 	const { user } = useAdminAuth();
+	const { orders } = useOrders({ live: true });
 	const [stats, setStats] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -132,6 +135,8 @@ export default function AdminDashboard() {
 					Everything stored for the 2026 season is available below.
 				</p>
 			</section>
+
+			<PendingWidget orders={orders} to="/admin/orders" />
 
 			<section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
 				<StatCard

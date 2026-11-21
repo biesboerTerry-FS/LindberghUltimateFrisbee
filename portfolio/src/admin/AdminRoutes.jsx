@@ -6,6 +6,9 @@ import Announcements from "./Announcements";
 import AdminLayout from "./AdminLayout";
 import AdminLogin from "./AdminLogin";
 import AdminResourcePage from "./AdminResourcePage";
+import MessagesPage from "../portal/MessagesPage";
+import OrdersPage from "../portal/OrdersPage";
+import SchedulePage from "../portal/SchedulePage";
 import RequireAuth from "./RequireAuth";
 
 /**
@@ -26,6 +29,9 @@ export default function AdminRoutes() {
 				>
 					<Route index element={<AdminDashboard />} />
 					<Route path="announcements" element={<Announcements />} />
+					<Route path="orders" element={<OrdersPage role="admin" />} />
+					<Route path="portal-messages" element={<MessagesPage role="admin" />} />
+					<Route path="portal-schedule" element={<SchedulePage role="admin" />} />
 					<Route path=":resource" element={<AdminResourcePage />} />
 					<Route path="*" element={<Navigate to="/admin" replace />} />
 				</Route>

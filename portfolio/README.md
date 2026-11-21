@@ -8,6 +8,16 @@ the Coaching Apprenticeship page—media galleries, registration/interest forms,
 a light/dark theme toggle, and the Admin Panel at `/admin`. The public site has
 no visitor accounts; only the Admin Panel requires a sign-in.
 
+The Admin Panel and the employee self-service portal (`/employee`) also include
+a shared staff workspace: an **Orders** dashboard for registrations and
+interest forms with a four-step fulfilment workflow (pending → in review →
+approved → archived), a **Pending** widget on both dashboards, role-based
+**Messages** inboxes, and a **Schedule** section with upcoming events,
+schedule/time-off requests, and availability. Demo data is seeded into
+localStorage (`lu-messages`, `lu-order-statuses`, `lu-schedule-requests`,
+`lu-timeoff-requests`, `lu-availability`); admin status changes are also
+mirrored to the API on a best-effort basis.
+
 ## Stack
 
 | Layer | Technology |

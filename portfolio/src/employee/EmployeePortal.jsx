@@ -5,6 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../assets/ultimateLogoTransparent.png";
 import { formatDate } from "../admin/format";
+import MessagesPage from "../portal/MessagesPage";
+import OrdersPage from "../portal/OrdersPage";
+import PendingWidget from "../portal/PendingWidget";
+import SchedulePage from "../portal/SchedulePage";
+import { useMessages, useOrders, useSchedule } from "../portal/portalStore";
 import ThemeToggle from "../theme/ThemeToggle";
 import {
 	DEMO_EMPLOYEES,
@@ -76,6 +81,17 @@ export default function EmployeePortal() {
 	});
 	const [editing, setEditing] = useState(false);
 	const [form, setForm] = useState(() => profileFields(employee));
+	const [activeTab, setActiveTab] = useState("overview");
+	const ordersData = useOrders();
+	const messagesData = useMessages("employee");
+	const scheduleData = useSchedule();
+
+	const TABS = [
+		{ id: "overview", label: "Overview" },
+		{ id: "orders", label: "Orders" },
+		{ id: "messages", label: "Messages" },
+		{ id: "schedule", label: "Schedule" },
+	];
 
 	if (!employee) {
 		return (
@@ -124,13 +140,37 @@ export default function EmployeePortal() {
 				</button>
 			</header>
 
+			<nav aria-label="Employee portal sections" className="border-b border-lu-green/15 bg-lu-cream px-4 sm:px-6">
+				<div className="mx-auto flex max-w-5xl gap-1 overflow-x-auto">
+					{TABS.map((tab) => (
+						<button
+							key={tab.id}
+							type="button"
+							onClick={() => setActiveTab(tab.id)}
+							aria-current={activeTab === tab.id ? "page" : undefined}
+							className={`shrink-0 border-b-2 px-3 py-3 text-sm font-semibold transition-colors ${
+								activeTab === tab.id
+									? "border-lu-green text-lu-green"
+									: "border-transparent text-lu-ink/55 hover:text-lu-dark"
+							}`}
+						>
+							{tab.label}
+						</button>
+					))}
+				</div>
+			</nav>
+
 			<main className="mx-auto flex max-w-5xl flex-col gap-4 p-4 sm:p-6">
+				{activeTab === "overview" && (
+					<>
 				<section>
 					<h1 className="font-display text-2xl font-bold text-lu-dark">Welcome back, {employee.name}</h1>
 					<p className="mt-1 text-sm text-lu-ink/55">
-						Your own details and schedule only. Stored in this browser (demo mode).
+						Your details, pending orders, messages, and schedule. Demo data is stored in this browser.
 					</p>
 				</section>
+
+				<PendingWidget orders={ordersData.orders} onOpen={() => setActiveTab("orders")} />
 
 				<div className="grid gap-4 md:grid-cols-2">
 					<section className="rounded-xl border border-lu-green/15 bg-white p-4">
@@ -215,9 +255,22 @@ export default function EmployeePortal() {
 				</div>
 
 				<p className="text-xs text-lu-ink/45">
-					This portal shows only your own information. Admin records, settings, and inboxes are not
-					available here.
+					Demo data is stored in this browser. Admin records and settings remain in the Admin Panel.
 				</p>
+					</>
+				)}
+
+				{activeTab === "orders" && (
+					<OrdersPage role="employee" data={ordersData} />
+				)}
+
+				{activeTab === "messages" && (
+					<MessagesPage role="employee" data={messagesData} />
+				)}
+
+				{activeTab === "schedule" && (
+					<SchedulePage role="employee" employee={employee} data={scheduleData} />
+				)}
 			</main>
 		</div>
 	);

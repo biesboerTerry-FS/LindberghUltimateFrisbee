@@ -5,6 +5,7 @@ import {
 	approveRegistrationHandler,
 	convertInterestHandler,
 	dashboard,
+	updateResourceStatusHandler,
 } from "../controllers/adminController.js";
 import {
 	createUser,
@@ -35,6 +36,11 @@ for (const { slug, model, options } of ADMIN_RESOURCES) {
 
 // Workflow actions (kept outside the generic CRUD router). They act on the
 // id in the URL, so an empty body is allowed but malformed bodies are not.
+router.patch(
+	"/:resource/:id/status",
+	requireObjectBody(),
+	updateResourceStatusHandler,
+);
 router.post(
 	"/registrations/:id/approve",
 	requireObjectBody({ allowEmpty: true }),
