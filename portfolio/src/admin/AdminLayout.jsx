@@ -9,6 +9,7 @@ import {
 import ultimateLogoTransparent from "../assets/ultimateLogoTransparent.png";
 import ThemeToggle from "../theme/ThemeToggle";
 import { useAdminAuth } from "./AdminAuthContext";
+import { LatestBulletin } from "./Announcements";
 import { NAV_GROUPS, RESOURCES } from "./resources";
 
 /**
@@ -220,6 +221,7 @@ export default function AdminLayout() {
 				)}
 
 				<main className="flex-1 p-4 sm:p-6">
+					<LatestBulletin />
 					<Outlet />
 				</main>
 			</div>

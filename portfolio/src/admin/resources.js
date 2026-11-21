@@ -251,6 +251,17 @@ export const RESOURCES = {
 			{ label: "Value", key: "value" },
 		],
 	},
+	announcements: {
+		label: "Announcements",
+		group: "Communication",
+		singular: "Bulletin",
+		columns: [
+			{ label: "Title", key: "title" },
+			{ label: "Type", key: "type" },
+			{ label: "Active", key: "active" },
+			{ label: "Posted", key: "createdAt" },
+		],
+	},
 	messages: {
 		label: "Inbox",
 		group: "Inbox",
@@ -291,6 +302,7 @@ export const NAV_GROUPS = [
 		label: "Website Content",
 		resources: ["testimonials", "faqs", "highlights", "galleries", "media", "settings"],
 	},
+	{ label: "Communication", resources: ["announcements"] },
 	{ label: "Inbox", resources: ["messages"] },
 	{ label: "System", resources: ["users"] },
 ];

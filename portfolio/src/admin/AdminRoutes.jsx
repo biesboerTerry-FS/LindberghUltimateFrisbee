@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AdminAuthProvider from "./AdminAuthProvider";
 import AdminDashboard from "./AdminDashboard";
+import Announcements from "./Announcements";
 import AdminLayout from "./AdminLayout";
 import AdminLogin from "./AdminLogin";
 import AdminResourcePage from "./AdminResourcePage";
@@ -24,6 +25,7 @@ export default function AdminRoutes() {
 					}
 				>
 					<Route index element={<AdminDashboard />} />
+					<Route path="announcements" element={<Announcements />} />
 					<Route path=":resource" element={<AdminResourcePage />} />
 					<Route path="*" element={<Navigate to="/admin" replace />} />
 				</Route>
