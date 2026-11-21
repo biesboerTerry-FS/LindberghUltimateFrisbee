@@ -6,6 +6,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import ultimateLogoTransparent from "../assets/ultimateLogoTransparent.png";
 import { ApiError, loginAdminDemo } from "../lib/api";
 import { useAdminAuth } from "./AdminAuthContext";
+import { DEMO_EMPLOYEES, signInDemoEmployee } from "../employee/employeeStore";
 
 /**
  * Admin sign-in screen.
@@ -39,6 +40,13 @@ export default function AdminLogin() {
 			);
 			setStatus("error");
 		}
+	};
+
+	/** Start a local demo employee session and open the limited self-service portal. */
+	const handleDemoEmployee = () => {
+		signInDemoEmployee(DEMO_EMPLOYEES[0].id);
+		toast.success("Demo employee session started.");
+		navigate("/employee");
 	};
 
 	/** One-click demo login for visitors who want to try the admin panel. */
@@ -146,6 +154,14 @@ export default function AdminLogin() {
 							className="rounded-full border border-lu-yellow px-6 py-3 font-bold text-lu-yellow transition-all hover:bg-lu-yellow hover:text-lu-green disabled:cursor-not-allowed disabled:opacity-60"
 						>
 							{status === "submitting" ? "Starting demo…" : "Try demo admin"}
+						</button>
+
+						<button
+							type="button"
+							onClick={handleDemoEmployee}
+							className="rounded-full border border-lu-cream/60 px-6 py-3 font-bold text-lu-cream transition-all hover:bg-lu-cream hover:text-lu-green"
+						>
+							Try demo employee
 						</button>
 					</form>
 				</div>

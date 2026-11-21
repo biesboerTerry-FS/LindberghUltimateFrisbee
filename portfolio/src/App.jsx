@@ -22,6 +22,7 @@ import Sitemap from "./pages/Sitemap";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import AdminRoutes from "./admin/AdminRoutes";
+import EmployeePortal from "./employee/EmployeePortal";
 
 function Layout({ children }) {
 	return (
@@ -55,6 +56,7 @@ function App() {
 			<Route path="/terms" element={<Layout><Terms /></Layout>} />
 			<Route path="/privacy" element={<Layout><Privacy /></Layout>} />
 			<Route path="/admin/*" element={<AdminRoutes />} />
+			<Route path="/employee" element={<EmployeePortal />} />
 		</Routes>
 	);
 }
